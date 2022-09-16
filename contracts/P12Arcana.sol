@@ -9,6 +9,9 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 contract P12Arcana is ERC2771Context, Ownable, ERC721 {
   uint256 idx;
 
+  // voting powers
+  mapping(uint256 => uint256) powers;
+
   // tokenId => problem Id => answer
   mapping(uint256 => mapping(uint256 => string)) public answers;
 
