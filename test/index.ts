@@ -1,20 +1,23 @@
 import { expect } from 'chai';
-import { ethers } from 'hardhat';
+import { Contract } from 'ethers';
+import { ethers, deployments } from 'hardhat';
+import { Forwarder, P12ArcanaUpgradable } from '../typechain';
 import { signMetaTxRequest } from './signer';
 
+async function getContract<T extends Contract>(contractName: string) {
+  await deployments.fixture([contractName]);
+  return await ethers.getContractAt<T>(contractName, (await deployments.get(contractName)).address);
+}
+
 describe('P12Arcana', function () {
-  let forwarderAddr: string;
+  let forwarder: Forwarder;
+  let p12Arcana: P12ArcanaUpgradable;
   this.beforeAll(async () => {
-    const ForwarderF = await ethers.getContractFactory('Forwarder');
-    const forwarder = await ForwarderF.deploy();
-    forwarderAddr = forwarder.address;
+    forwarder = await getContract<Forwarder>('Forwarder');
+    p12Arcana = await getContract<P12ArcanaUpgradable>('P12ArcanaUpgradable');
   });
   it('Should user self get successfully', async function () {
     const [user] = await ethers.getSigners();
-
-    const forward = await ethers.getContractAt('Forwarder', forwarderAddr);
-
-    const p12Arcana = await (await ethers.getContractFactory('P12Arcana')).deploy('', '', forward.address);
 
     await p12Arcana.getBattlePass();
 
@@ -23,15 +26,11 @@ describe('P12Arcana', function () {
   it('Should relayer work properly', async function () {
     const [user, relayer] = await ethers.getSigners();
 
-    const forward = await ethers.getContractAt('Forwarder', forwarderAddr);
-
-    const p12Arcana = await (await ethers.getContractFactory('P12Arcana')).deploy('', '', forward.address);
-
     const tx = await p12Arcana.populateTransaction.getBattlePass();
 
-    const req = await signMetaTxRequest(user, forward, tx);
+    const req = await signMetaTxRequest(user, forwarder, tx);
 
-    await forward.connect(relayer).execute(req.request, req.signature);
+    await forwarder.connect(relayer).execute(req.request, req.signature);
 
     expect(await p12Arcana.balanceOf(user.address)).to.be.equal(1);
 
@@ -40,9 +39,9 @@ describe('P12Arcana', function () {
 
     const answerTx = await p12Arcana.populateTransaction.updateAnswer(0, questionList, answerList);
 
-    const answerReq = await signMetaTxRequest(user, forward, answerTx);
+    const answerReq = await signMetaTxRequest(user, forwarder, answerTx);
 
-    await forward.connect(relayer).execute(answerReq.request, answerReq.signature);
+    await forwarder.connect(relayer).execute(answerReq.request, answerReq.signature);
 
     for (let i = 0; i < questionList.length; i++) {
       expect(await p12Arcana.answers(0, questionList[i])).to.be.equal(answerList[i]);

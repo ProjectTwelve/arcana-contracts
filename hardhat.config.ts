@@ -2,12 +2,15 @@ import * as dotenv from 'dotenv';
 
 import { HardhatUserConfig, task } from 'hardhat/config';
 import { addFlatTask } from './flat';
+import 'hardhat-deploy';
 import '@nomiclabs/hardhat-etherscan';
 import '@nomiclabs/hardhat-waffle';
+
 import '@typechain/hardhat';
 import 'hardhat-gas-reporter';
 import 'solidity-coverage';
 import '@openzeppelin/hardhat-upgrades';
+import '@nomiclabs/hardhat-ethers';
 
 dotenv.config();
 addFlatTask();
@@ -39,25 +42,6 @@ const config: HardhatUserConfig = {
           },
         },
       },
-      {
-        version: '0.5.16',
-      },
-      {
-        version: '0.6.6',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 999999,
-          },
-          evmVersion: 'istanbul',
-        },
-      },
-      {
-        version: '0.4.18',
-      },
-      {
-        version: '0.4.0',
-      },
     ],
   },
   networks: {
@@ -79,6 +63,19 @@ const config: HardhatUserConfig = {
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: 'USD',
+  },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+      p12TestNet: 0,
+    },
+  },
+  external: {
+    contracts: [
+      {
+        artifacts: 'node_modules/@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol/',
+      },
+    ],
   },
 };
 
