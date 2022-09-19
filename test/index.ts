@@ -37,17 +37,17 @@ describe('P12Arcana', function () {
 
     expect(await p12Arcana.balanceOf(user.address)).to.be.equal(1);
 
-    const questionList = [0, 1, 2, 3, 4, 5, 6, 7];
-    const answerList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-
-    const answerTx = await p12Arcana.populateTransaction.updateAnswer(0, questionList, answerList);
+    const answerTx = await p12Arcana.populateTransaction.updateAnswerUri(
+      0,
+      // cspell:disable-next-line
+      'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy',
+    );
 
     const answerReq = await signMetaTxRequest(user, forwarder, answerTx);
 
     await forwarder.connect(relayer).execute(answerReq.request, answerReq.signature);
 
-    for (let i = 0; i < questionList.length; i++) {
-      expect(await p12Arcana.answers(0, questionList[i])).to.be.equal(answerList[i]);
-    }
+    // cspell:disable-next-line
+    expect(await p12Arcana.answersUri(0)).to.be.equal('ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy');
   });
 });

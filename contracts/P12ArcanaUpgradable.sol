@@ -14,11 +14,11 @@ import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
 contract P12ArcanaUpgradable is ERC2771ContextUpgradeable, OwnableUpgradeable, UUPSUpgradeable, ERC721Upgradeable {
   uint256 idx;
 
+  // signer
+  mapping(address => bool) signers;
+
   // voting powers
   mapping(uint256 => uint256) powers;
-
-  // tokenId => problem Id => answer
-  mapping(uint256 => mapping(uint256 => string)) public answers;
 
   // tokenId => ipfs uri
   mapping(uint256 => string) public answersUri;
@@ -53,18 +53,8 @@ contract P12ArcanaUpgradable is ERC2771ContextUpgradeable, OwnableUpgradeable, U
     answersUri[tokenId] = uri;
   }
 
-  //
-  function updateAnswer(
-    uint256 tokenId,
-    uint256[] calldata problemId,
-    string[] calldata replies
-  ) external {
-    require(ownerOf(tokenId) == _msgSender(), 'P12Arcana: not token owner');
-    require(problemId.length == replies.length, 'P12Arcana: invalid args');
-
-    for (uint256 i = 0; i < problemId.length; i++) {
-      require(bytes(replies[0]).length <= 32, 'P12Arcana: reply to long');
-      answers[tokenId][problemId[i]] = replies[i];
-    }
+  modifier onlySigner() {
+    require(signers[_msgSender()] == true, 'P12Arcana: not signer');
+    _;
   }
 }
