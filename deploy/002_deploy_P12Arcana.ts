@@ -15,7 +15,7 @@ const func: DeployFunction = async function ({ deployments, getNamedAccounts }) 
       execute: {
         init: {
           methodName: 'initialize',
-          args: ['', ''],
+          args: ['P12MultiCastVoter', 'P12-MCV', 'v0.0.1'],
         },
       },
     },

@@ -1,6 +1,7 @@
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
-import { ethers, deployments } from 'hardhat';
+import hre, { ethers, deployments } from 'hardhat';
 import { Forwarder, P12ArcanaUpgradable } from '../typechain';
 import { signMetaTxRequest } from './signer';
 
@@ -12,32 +13,47 @@ async function getContract<T extends Contract>(contractName: string) {
 describe('P12Arcana', function () {
   let forwarder: Forwarder;
   let p12Arcana: P12ArcanaUpgradable;
+
+  let owner: SignerWithAddress;
+  let signer: SignerWithAddress;
+  let relayer: SignerWithAddress;
+  let user: SignerWithAddress;
   this.beforeAll(async () => {
     forwarder = await getContract<Forwarder>('Forwarder');
     p12Arcana = await getContract<P12ArcanaUpgradable>('P12ArcanaUpgradable');
+    [owner, signer, relayer, user] = await ethers.getSigners();
   });
-  it('Should user self get successfully', async function () {
-    const [user] = await ethers.getSigners();
+  it('Should set signer successfully', async () => {
+    expect(await p12Arcana.signers(signer.address)).to.be.equal(false);
+    await p12Arcana.connect(owner).setSigner(signer.address, true);
+    expect(await p12Arcana.signers(signer.address)).to.be.equal(true);
+  });
 
-    await p12Arcana.getBattlePass();
+  it('Should user self work successfully', async function () {
+    await p12Arcana.connect(user)['getBattlePass()']();
 
     expect(await p12Arcana.balanceOf(user.address)).to.be.equal(1);
 
-    // cspell:disable-next-line
-    await p12Arcana.updateAnswerUri(0, 'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy');
+    await p12Arcana
+      .connect(user)
+      // cspell:disable-next-line
+      .updateAnswerUri(0, 'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy');
   });
   it('Should relayer work properly', async function () {
-    const [user, relayer] = await ethers.getSigners();
-
-    const tx = await p12Arcana.populateTransaction.getBattlePass();
+    const tx = await p12Arcana.connect(user).populateTransaction['getBattlePass()']();
 
     const req = await signMetaTxRequest(user, forwarder, tx);
 
+    expect(await p12Arcana.balanceOf(user.address)).to.be.equal(1);
+
     await forwarder.connect(relayer).execute(req.request, req.signature);
+
+    expect(await p12Arcana.balanceOf(relayer.address)).to.be.equal(0);
+    expect(await p12Arcana.balanceOf(forwarder.address)).to.be.equal(0);
 
     expect(await p12Arcana.balanceOf(user.address)).to.be.equal(1);
 
-    const answerTx = await p12Arcana.populateTransaction.updateAnswerUri(
+    const answerTx = await p12Arcana.connect(user).populateTransaction.updateAnswerUri(
       0,
       // cspell:disable-next-line
       'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy',
@@ -49,5 +65,25 @@ describe('P12Arcana', function () {
 
     // cspell:disable-next-line
     expect(await p12Arcana.answersUri(0)).to.be.equal('ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy');
+  });
+
+  it('Should update power successfully', async () => {
+    const chainId = await hre.getChainId();
+    const domain = { name: await p12Arcana.name(), version: 'v0.0.1', chainId: chainId, verifyingContract: p12Arcana.address };
+    const deadline = Math.round(new Date().getTime() / 1000) + 86400;
+
+    const type = {
+      PowerUpdate: [
+        { name: 'tokenId', type: 'uint256' },
+        { name: 'power', type: 'uint256' },
+        { name: 'deadline', type: 'uint256' },
+      ],
+    };
+
+    const sig = await signer._signTypedData(domain, type, { tokenId: 0, power: 100, deadline: deadline });
+
+    await p12Arcana.connect(user).updatePower(0, 100, deadline, sig);
+
+    expect(await p12Arcana.powers(0)).to.be.equal(100);
   });
 });

@@ -11,22 +11,41 @@ import '@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
 
-contract P12ArcanaUpgradable is ERC2771ContextUpgradeable, OwnableUpgradeable, UUPSUpgradeable, ERC721Upgradeable {
+import '@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol';
+
+contract P12ArcanaUpgradable is
+  ERC2771ContextUpgradeable,
+  OwnableUpgradeable,
+  UUPSUpgradeable,
+  ERC721Upgradeable,
+  EIP712Upgradeable
+{
+  using ECDSAUpgradeable for bytes32;
+
+  bytes32 private constant _TYPEHASH = keccak256('PowerUpdate(uint256 tokenId,uint256 power,uint256 deadline)');
+
   uint256 idx;
 
-  // signer
-  mapping(address => bool) signers;
+  // signers
+  mapping(address => bool) public signers;
 
   // voting powers
-  mapping(uint256 => uint256) powers;
+  mapping(uint256 => uint256) public powers;
 
   // tokenId => ipfs uri
   mapping(uint256 => string) public answersUri;
 
   constructor(address forwarder_) ERC2771ContextUpgradeable(forwarder_) {}
 
-  function initialize(string memory name_, string memory symbol_) public initializer {
+  function initialize(
+    string calldata name_,
+    string calldata symbol_,
+    string calldata version_
+  ) public initializer {
+    __Ownable_init_unchained();
     __ERC721_init_unchained(name_, symbol_);
+    __EIP712_init_unchained(name_, version_);
   }
 
   function _authorizeUpgrade(address newImplementation) internal virtual override onlyOwner {}
@@ -47,10 +66,42 @@ contract P12ArcanaUpgradable is ERC2771ContextUpgradeable, OwnableUpgradeable, U
     idx += 1;
   }
 
+  function getBattlePass(address user) external {
+    require(balanceOf(user) == 0, 'P12Arcana: already have pass');
+
+    _safeMint(user, idx);
+    idx += 1;
+  }
+
   function updateAnswerUri(uint256 tokenId, string calldata uri) external {
     require(ownerOf(tokenId) == _msgSender(), 'P12Arcana: not token owner');
 
     answersUri[tokenId] = uri;
+  }
+
+  function updatePower(
+    uint256 tokenId,
+    uint256 power,
+    uint256 deadline,
+    bytes calldata signature
+  ) external {
+    require(ownerOf(tokenId) == _msgSender(), 'P12Arcana: not token owner');
+    require(deadline > block.timestamp, 'P12Arcana: outdated sig');
+
+    address signer = _hashTypedDataV4(keccak256(abi.encode(_TYPEHASH, tokenId, power, deadline))).recover(signature);
+
+    require(signers[signer] == true, 'P12Arcana: sig not from signer');
+
+    powers[tokenId] = power;
+  }
+
+  function setSigner(address signer, bool valid) external onlyOwner {
+    signers[signer] = valid;
+  }
+
+  // EIP 4883
+  function renderTokenById(uint256 tokenId) public view returns (string memory) {
+    return '';
   }
 
   modifier onlySigner() {
