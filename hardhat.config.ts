@@ -26,6 +26,7 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 });
 
 const accounts = process.env.ACCOUNTS ? process.env.ACCOUNTS.split(',') : [];
+const addresses = process.env.ADDRESSES ? process.env.ADDRESSES.split(',') : [];
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -59,18 +60,25 @@ const config: HardhatUserConfig = {
       url: process.env.RINKEBY_URL || '',
       accounts: accounts,
     },
+    bnbTest: {
+      url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+      accounts: accounts,
+      gas: 'auto',
+      gasPrice: 'auto',
+      deploy: ['deploy/bnbTest'],
+    },
+  },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+      p12TestNet: addresses[0],
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: 'ETH',
     gasPrice: 5,
     showTimeSpent: true,
-  },
-  namedAccounts: {
-    deployer: {
-      default: 0,
-      p12TestNet: 0,
-    },
   },
   external: {
     contracts: [

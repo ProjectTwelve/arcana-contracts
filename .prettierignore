@@ -6,3 +6,4 @@ cache
 coverage*
 gasReporterOutput.json
 typechain
+deployments
