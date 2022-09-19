@@ -86,4 +86,27 @@ describe('P12Arcana', function () {
 
     expect(await p12Arcana.powers(0)).to.be.equal(100);
   });
+  it('Should update power via meta transaction successfully', async () => {
+    const chainId = await hre.getChainId();
+    const domain = { name: await p12Arcana.name(), version: 'v0.0.1', chainId: chainId, verifyingContract: p12Arcana.address };
+    const deadline = Math.round(new Date().getTime() / 1000) + 86400;
+
+    const type = {
+      PowerUpdate: [
+        { name: 'tokenId', type: 'uint256' },
+        { name: 'power', type: 'uint256' },
+        { name: 'deadline', type: 'uint256' },
+      ],
+    };
+
+    const sig = await signer._signTypedData(domain, type, { tokenId: 0, power: 200, deadline: deadline });
+
+    const tx = await p12Arcana.connect(user).populateTransaction.updatePower(0, 200, deadline, sig);
+
+    const req = await signMetaTxRequest(user, forwarder, tx);
+
+    await forwarder.connect(relayer).execute(req.request, req.signature);
+
+    expect(await p12Arcana.powers(0)).to.be.equal(200);
+  });
 });
