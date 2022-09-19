@@ -62,7 +62,9 @@ const config: HardhatUserConfig = {
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
-    currency: 'USD',
+    currency: 'ETH',
+    gasPrice: 5,
+    showTimeSpent: true,
   },
   namedAccounts: {
     deployer: {

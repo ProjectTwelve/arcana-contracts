@@ -10,7 +10,7 @@
     "flat": "hardhat flat",
     "prettier": "prettier -w .",
     "test": "hardhat test --deploy-fixture",
-    "test:analysis": "REPORT_GAS=true hardhat test",
+    "test:analysis": "REPORT_GAS=true hardhat test --deploy-fixture",
     "coverage": "hardhat coverage",
     "lint": "cspell \"**/*.sol\" \"**/*.ts\" && prettier -w . && eslint \"**/**.ts\" --fix && solhint \"contracts/**/*.sol\""
   },
@@ -38,7 +38,7 @@
     "ethereum-waffle": "^3.4.0",
     "hardhat": "2.9.5",
     "hardhat-deploy": "^0.11.15",
-    "hardhat-gas-reporter": "^1.0.6",
+    "hardhat-gas-reporter": "^1.0.9",
     "husky": "^7.0.4",
     "prettier": "^2.5.1",
     "prettier-plugin-sh": "^0.8.1",

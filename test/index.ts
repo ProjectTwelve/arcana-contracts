@@ -22,6 +22,9 @@ describe('P12Arcana', function () {
     await p12Arcana.getBattlePass();
 
     expect(await p12Arcana.balanceOf(user.address)).to.be.equal(1);
+
+    // cspell:disable-next-line
+    await p12Arcana.updateAnswerUri(0, 'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy');
   });
   it('Should relayer work properly', async function () {
     const [user, relayer] = await ethers.getSigners();

@@ -20,12 +20,12 @@ contract P12ArcanaUpgradable is ERC2771ContextUpgradeable, OwnableUpgradeable, U
   // tokenId => problem Id => answer
   mapping(uint256 => mapping(uint256 => string)) public answers;
 
+  // tokenId => ipfs uri
+  mapping(uint256 => string) public answersUri;
+
   constructor(address forwarder_) ERC2771ContextUpgradeable(forwarder_) {}
 
-  function initialize(
-    string memory name_,
-    string memory symbol_
-  ) public initializer {
+  function initialize(string memory name_, string memory symbol_) public initializer {
     __ERC721_init_unchained(name_, symbol_);
   }
 
@@ -45,6 +45,12 @@ contract P12ArcanaUpgradable is ERC2771ContextUpgradeable, OwnableUpgradeable, U
 
     _safeMint(_msgSender(), idx);
     idx += 1;
+  }
+
+  function updateAnswerUri(uint256 tokenId, string calldata uri) external {
+    require(ownerOf(tokenId) == _msgSender(), 'P12Arcana: not token owner');
+
+    answersUri[tokenId] = uri;
   }
 
   //
