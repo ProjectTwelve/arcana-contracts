@@ -13,8 +13,13 @@ import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
 
 import '@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol';
+import { Base64 } from '@openzeppelin/contracts/utils/Base64.sol';
+
+import './interface/IP12ArcanaUpgradable.sol';
+import './interface/IRenderEngine.sol';
 
 contract P12ArcanaUpgradable is
+  IP12ArcanaUpgradable,
   ERC2771ContextUpgradeable,
   OwnableUpgradeable,
   UUPSUpgradeable,
@@ -27,11 +32,14 @@ contract P12ArcanaUpgradable is
 
   uint256 idx;
 
+  //
+  address public renderEngine;
+
   // signers
   mapping(address => bool) public signers;
 
   // voting powers
-  mapping(uint256 => uint256) public powers;
+  mapping(uint256 => uint256) private _powers;
 
   // tokenId => ipfs uri
   mapping(uint256 => string) public answersUri;
@@ -92,16 +100,33 @@ contract P12ArcanaUpgradable is
 
     require(signers[signer] == true, 'P12Arcana: sig not from signer');
 
-    powers[tokenId] = power;
+    _powers[tokenId] = power;
+  }
+
+  function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+    _requireMinted(tokenId);
+
+    string memory SVG = IRenderEngine(renderEngine).renderTokenById(tokenId);
+
+    string memory description = 'P12 Arcana MultiCast Vote';
+
+    string memory metadata = Base64.encode(
+      bytes(string.concat('{"name": "P12 Arcana MultiCast Vote","description":"', description, '","image":"', SVG, '"}'))
+    );
+
+    return string.concat('data:application/json;base64,', metadata);
+  }
+
+  function getVotingPower(uint256 tokenId) external view override returns (uint256) {
+    return _powers[tokenId];
   }
 
   function setSigner(address signer, bool valid) external onlyOwner {
     signers[signer] = valid;
   }
 
-  // EIP 4883
-  function renderTokenById(uint256 tokenId) public view returns (string memory) {
-    return '';
+  function setRenderEngin(address newEngine) external onlyOwner {
+    renderEngine = newEngine;
   }
 
   modifier onlySigner() {

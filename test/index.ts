@@ -2,7 +2,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
 import hre, { ethers, deployments } from 'hardhat';
-import { Forwarder, P12ArcanaUpgradable } from '../typechain';
+import { Forwarder, P12ArcanaUpgradable, RenderEngine } from '../typechain';
 import { signMetaTxRequest } from './signer';
 
 async function getContract<T extends Contract>(contractName: string) {
@@ -13,6 +13,7 @@ async function getContract<T extends Contract>(contractName: string) {
 describe('P12Arcana', function () {
   let forwarder: Forwarder;
   let p12Arcana: P12ArcanaUpgradable;
+  let renderEngine: RenderEngine;
 
   let owner: SignerWithAddress;
   let signer: SignerWithAddress;
@@ -21,12 +22,19 @@ describe('P12Arcana', function () {
   this.beforeAll(async () => {
     forwarder = await getContract<Forwarder>('Forwarder');
     p12Arcana = await getContract<P12ArcanaUpgradable>('P12ArcanaUpgradable');
+    renderEngine = await getContract<RenderEngine>('RenderEngine');
     [owner, signer, relayer, user] = await ethers.getSigners();
   });
   it('Should set signer successfully', async () => {
     expect(await p12Arcana.signers(signer.address)).to.be.equal(false);
     await p12Arcana.connect(owner).setSigner(signer.address, true);
     expect(await p12Arcana.signers(signer.address)).to.be.equal(true);
+  });
+
+  it('Should set renderEngine successfully', async () => {
+    expect(await p12Arcana.renderEngine()).to.be.equal(ethers.constants.AddressZero);
+    await p12Arcana.connect(owner).setRenderEngin(renderEngine.address);
+    expect(await p12Arcana.renderEngine()).to.be.equal(renderEngine.address);
   });
 
   it('Should user self work successfully', async function () {
@@ -84,7 +92,7 @@ describe('P12Arcana', function () {
 
     await p12Arcana.connect(user).updatePower(0, 100, deadline, sig);
 
-    expect(await p12Arcana.powers(0)).to.be.equal(100);
+    expect(await p12Arcana.getVotingPower(0)).to.be.equal(100);
   });
   it('Should update power via meta transaction successfully', async () => {
     const chainId = await hre.getChainId();
@@ -107,6 +115,12 @@ describe('P12Arcana', function () {
 
     await forwarder.connect(relayer).execute(req.request, req.signature);
 
-    expect(await p12Arcana.powers(0)).to.be.equal(200);
+    expect(await p12Arcana.getVotingPower(0)).to.be.equal(200);
+  });
+
+  it('Should render tokenUri successfully', async () => {
+    const metadata = await p12Arcana.tokenURI(0);
+
+    console.log(metadata);
   });
 });

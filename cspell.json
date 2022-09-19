@@ -55,7 +55,8 @@
     "composability",
     "Hola",
     "metatx",
-    "ipfs"
+    "ipfs",
+    "concat"
   ],
   "ignorePaths": ["typechain/**", "flatten/**"]
 }
