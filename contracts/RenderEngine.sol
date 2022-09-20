@@ -12,7 +12,7 @@ contract RenderEngine is IRenderEngine {
   function renderTokenById(uint256 tokenId) public view override returns (string memory) {
     uint256 power = IP12ArcanaUpgradable(msg.sender).getVotingPower(tokenId);
     console.log(power);
-    if (power < 1000) {
+    if (power < 15) {
       return _renderSilver(power);
     } else {
       return _renderGold(power);
@@ -21,11 +21,32 @@ contract RenderEngine is IRenderEngine {
 
   //
   function _renderSilver(uint256 power) private pure returns (string memory) {
-    return string(abi.encodePacked(RenderConsts.SLIVER_PREFIX, Strings.toString(power), RenderConsts.SLIVER_SUFFIX));
+    return
+      string(
+        abi.encodePacked(
+          RenderConsts.SLIVER_PREFIX,
+          Strings.toString(power),
+          RenderConsts.SLIVER_SUFFIX,
+          RenderConsts.FONTS,
+          '</defs></svg>'
+        )
+      );
   }
 
   //
-  function _renderGold(uint256 power) private view returns (string memory) {
-    return '';
+  function _renderGold(uint256 power) private pure returns (string memory) {
+    if (power > 999) {
+      power = 999;
+    }
+    return
+      string(
+        abi.encodePacked(
+          RenderConsts.GOLD_PREFIX,
+          Strings.toString(power),
+          RenderConsts.GOLD_SUFFIX,
+          RenderConsts.FONTS,
+          '</defs></svg>'
+        )
+      );
   }
 }

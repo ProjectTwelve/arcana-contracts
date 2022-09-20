@@ -56,7 +56,13 @@
     "uqdiv",
     "uups",
     "UUPS",
-    "xwbf"
+    "xwbf",
+    "composability",
+    "Hola",
+    "metatx",
+    "ipfs",
+    "concat",
+    "Henny"
   ],
   "ignorePaths": ["typechain/**", "flatten/**"]
 }
