@@ -8,6 +8,6 @@
         "ignoreConstructors": true
       }
     ],
-    "quotes": ["error", "single"]
+    "quotes": ["warn", "single"]
   }
 }

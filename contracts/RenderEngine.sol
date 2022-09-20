@@ -5,13 +5,10 @@ import './interface/IP12ArcanaUpgradable.sol';
 import './interface/IRenderEngine.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 
-import 'hardhat/console.sol';
-
 contract RenderEngine is IRenderEngine {
   // EIP 4883
   function renderTokenById(uint256 tokenId) public view override returns (string memory) {
     uint256 power = IP12ArcanaUpgradable(msg.sender).getVotingPower(tokenId);
-    console.log(power);
     if (power < 15) {
       return _renderSilver(power);
     } else {

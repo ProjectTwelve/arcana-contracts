@@ -15,7 +15,12 @@ const func: DeployFunction = async function ({ deployments, getNamedAccounts }) 
       execute: {
         init: {
           methodName: 'initialize',
-          args: ['P12MultiCastVoter', 'P12-MCV', 'v0.0.1'],
+          args: [
+            'P12 Fantasy Pass',
+            'P12FP',
+            'v0.0.1',
+            "P12 Fantasy Pass is a symbol of participation in P12 Arcana @ TI11, a massive online web3 gaming campaign in accordance with one of the world's biggest esports tournaments: The International 2022, featuring Dota 2.",
+          ],
         },
       },
     },

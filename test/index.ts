@@ -121,6 +121,6 @@ describe('P12Arcana', function () {
   it('Should render tokenUri successfully', async () => {
     const metadata = await p12Arcana.tokenURI(0);
 
-    console.log(metadata);
+    console.log(atob(metadata.slice(29)));
   });
 });

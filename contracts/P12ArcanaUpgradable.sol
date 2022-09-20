@@ -14,6 +14,7 @@ import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol';
 import { Base64 } from '@openzeppelin/contracts/utils/Base64.sol';
+import '@openzeppelin/contracts/utils/Strings.sol';
 
 import './interface/IP12ArcanaUpgradable.sol';
 import './interface/IRenderEngine.sol';
@@ -35,6 +36,8 @@ contract P12ArcanaUpgradable is
   //
   address public renderEngine;
 
+  string private _description;
+
   // signers
   mapping(address => bool) public signers;
 
@@ -49,8 +52,10 @@ contract P12ArcanaUpgradable is
   function initialize(
     string calldata name_,
     string calldata symbol_,
-    string calldata version_
+    string calldata version_,
+    string calldata description_
   ) public initializer {
+    _description = description_;
     __Ownable_init_unchained();
     __ERC721_init_unchained(name_, symbol_);
     __EIP712_init_unchained(name_, version_);
@@ -108,10 +113,20 @@ contract P12ArcanaUpgradable is
 
     string memory SVG = IRenderEngine(renderEngine).renderTokenById(tokenId);
 
-    string memory description = 'P12 Arcana MultiCast Vote';
-
     string memory metadata = Base64.encode(
-      bytes(string.concat('{"name": "P12 Arcana MultiCast Vote","description":"', description, '","image":"', SVG, '"}'))
+      bytes(
+        string.concat(
+          '{"name": "',
+          name(),
+          '","description":"',
+          _description,
+          '","image":"',
+          SVG,
+          '","attributes": [{"display_type": "number","trait_type": "power","value": ',
+          Strings.toString(_powers[tokenId]),
+          '}]}'
+        )
+      )
     );
 
     return string.concat('data:application/json;base64,', metadata);

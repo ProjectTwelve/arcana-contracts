@@ -57,7 +57,9 @@
     "metatx",
     "ipfs",
     "concat",
-    "Henny"
+    "Henny",
+    "esports",
+    "Dota"
   ],
   "ignorePaths": ["typechain/**", "flatten/**"]
 }
