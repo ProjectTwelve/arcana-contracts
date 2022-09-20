@@ -80,6 +80,11 @@ const config: HardhatUserConfig = {
     gasPrice: 5,
     showTimeSpent: true,
   },
+  etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: process.env.BNBSCAN_API_KEY!,
+  },
   external: {
     contracts: [
       {
