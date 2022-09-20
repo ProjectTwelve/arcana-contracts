@@ -56,7 +56,8 @@
     "Hola",
     "metatx",
     "ipfs",
-    "concat"
+    "concat",
+    "Henny"
   ],
   "ignorePaths": ["typechain/**", "flatten/**"]
 }
