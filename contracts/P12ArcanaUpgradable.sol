@@ -95,6 +95,15 @@ contract P12ArcanaUpgradable is
   function updatePower(
     uint256 tokenId,
     uint256 power,
+    uint256 deadline
+  ) external onlySigner {
+    require(deadline > block.timestamp, 'P12Arcana: outdated sig');
+    _powers[tokenId] = power;
+  }
+
+  function updatePower(
+    uint256 tokenId,
+    uint256 power,
     uint256 deadline,
     bytes calldata signature
   ) external {
