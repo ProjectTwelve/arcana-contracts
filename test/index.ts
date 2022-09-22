@@ -1,14 +1,9 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
-import { Contract } from 'ethers';
-import hre, { ethers, deployments } from 'hardhat';
+import hre, { ethers } from 'hardhat';
 import { Forwarder, P12ArcanaUpgradable, RenderEngine } from '../typechain';
 import { signMetaTxRequest } from './signer';
-
-async function getContract<T extends Contract>(contractName: string) {
-  await deployments.fixture([contractName]);
-  return await ethers.getContractAt<T>(contractName, (await deployments.get(contractName)).address);
-}
+import { getContract } from './utils';
 
 describe('P12Arcana', function () {
   let forwarder: Forwarder;
