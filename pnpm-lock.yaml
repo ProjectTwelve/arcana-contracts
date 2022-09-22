@@ -31,6 +31,7 @@ specifiers:
   eslint-plugin-promise: ^5.2.0
   ethereum-waffle: ^3.4.0
   ethers: ^5.7.1
+  fs-extra: ^10.0.1
   hardhat: 2.9.5
   hardhat-deploy: ^0.11.15
   hardhat-gas-reporter: ^1.0.9
@@ -79,6 +80,7 @@ devDependencies:
   eslint-plugin-promise: 5.2.0_eslint@7.32.0
   ethereum-waffle: 3.4.4_typescript@4.8.3
   ethers: 5.7.1
+  fs-extra: 10.1.0
   hardhat: 2.9.5_chai@4.3.6
   hardhat-deploy: 0.11.15
   hardhat-gas-reporter: 1.0.9_hardhat@2.9.5
