@@ -10,7 +10,6 @@ import '@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol
 import '@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol';
 
 import '@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol';
@@ -26,8 +25,7 @@ contract P12ArcanaUpgradable is
   OwnableUpgradeable,
   UUPSUpgradeable,
   ERC721Upgradeable,
-  EIP712Upgradeable,
-  ReentrancyGuardUpgradeable
+  EIP712Upgradeable
 {
   using ECDSAUpgradeable for bytes32;
 
@@ -61,7 +59,6 @@ contract P12ArcanaUpgradable is
     __Ownable_init_unchained();
     __ERC721_init_unchained(name_, symbol_);
     __EIP712_init_unchained(name_, version_);
-    __ReentrancyGuard_init_unchained();
   }
 
   function _authorizeUpgrade(address newImplementation) internal virtual override onlyOwner {}
@@ -75,18 +72,18 @@ contract P12ArcanaUpgradable is
   }
 
   //
-  function getBattlePass() external nonReentrant {
+  function getBattlePass() external {
     require(balanceOf(_msgSender()) == 0, 'P12Arcana: already have pass');
 
-    _safeMint(_msgSender(), idx);
     idx += 1;
+    _safeMint(_msgSender(), idx);
   }
 
-  function getBattlePass(address user) external nonReentrant {
+  function getBattlePass(address user) external {
     require(balanceOf(user) == 0, 'P12Arcana: already have pass');
 
-    _safeMint(user, idx);
     idx += 1;
+    _safeMint(_msgSender(), idx);
   }
 
   function updateAnswerUri(uint256 tokenId, string calldata uri) external {
