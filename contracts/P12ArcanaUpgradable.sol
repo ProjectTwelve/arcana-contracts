@@ -49,7 +49,7 @@ contract P12ArcanaUpgradable is
   // tokenId => ipfs uri
   mapping(uint256 => string) public answersUri;
 
-  constructor(address forwarder_) ERC2771ContextUpgradeable(forwarder_) {}
+  constructor(address forwarder_) initializer ERC2771ContextUpgradeable(forwarder_) {}
 
   function initialize(
     string calldata name_,
