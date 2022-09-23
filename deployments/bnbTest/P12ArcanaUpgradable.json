@@ -1,5 +1,5 @@
 {
-  "address": "0x9FFEC691D21aC1Ec21BF6de9A1f310C471BeC8F4",
+  "address": "0xA5398E751098D7B04C366297605ACB469A88C889",
   "abi": [
     {
       "anonymous": false,
@@ -218,6 +218,13 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "claimOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
@@ -381,6 +388,19 @@
         }
       ],
       "name": "ownerOf",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pendingOwner",
       "outputs": [
         {
           "internalType": "address",
@@ -623,6 +643,11 @@
           "internalType": "address",
           "name": "newOwner",
           "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "direct",
+          "type": "bool"
         }
       ],
       "name": "transferOwnership",
@@ -679,6 +704,29 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "power",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        }
+      ],
+      "name": "updatePower",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "newImplementation",
           "type": "address"
@@ -724,64 +772,64 @@
       "type": "constructor"
     }
   ],
-  "transactionHash": "0xa7d1f787cf590b33d231f080c4cc478d88cb0bb5e1507ace75b55717764230b8",
+  "transactionHash": "0x5f1a09b8dc67a81f9d1bd9c1842cc883a1e65ef47de2585fef7f20d6b22e5867",
   "receipt": {
     "to": null,
     "from": "0xe0B4c9C36f5A5D0Ff3A547FeaBB6BC9Ba65805F2",
-    "contractAddress": "0x9FFEC691D21aC1Ec21BF6de9A1f310C471BeC8F4",
-    "transactionIndex": 6,
-    "gasUsed": "551532",
-    "logsBloom": "0x00000000000000000000100000000000400000000000400000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000002000001000000000000000000000000000000000000020000000000000000000800000000000000000020000000040000400000000000000000000000000000000000000000000080000000000000000000000000000000000000002000000400000000000000000000000000000000000000000020000000000100000000040000000000000000000000000000000020000000000000000000000000000000008001000000000000000000000000000000",
-    "blockHash": "0xfa380ab18d6fe3d441ae49b2b8ea5b65afb9eaf312ee2f7831bd87535d20b598",
-    "transactionHash": "0xa7d1f787cf590b33d231f080c4cc478d88cb0bb5e1507ace75b55717764230b8",
+    "contractAddress": "0xA5398E751098D7B04C366297605ACB469A88C889",
+    "transactionIndex": 5,
+    "gasUsed": "551610",
+    "logsBloom": "0x00000000000000000000100000000000400000000008000000800000000000000000000000000000000000000000000000000100010000000000000000000000000000000000000000000000000002010001000000000000000000000000000000000000020000000000000000000800000000000000000020000000000000400000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000400000000000000000000000000008000000000000020000000000000000000040000000000000000000000000000000020000000000000000000000000000000000001000000000000100000000000000000",
+    "blockHash": "0xe7a854ad9c686c6827386a588d2a8a71fab70b7504e9d82c7e1b7f128750a6ef",
+    "transactionHash": "0x5f1a09b8dc67a81f9d1bd9c1842cc883a1e65ef47de2585fef7f20d6b22e5867",
     "logs": [
       {
-        "transactionIndex": 6,
-        "blockNumber": 23053589,
-        "transactionHash": "0xa7d1f787cf590b33d231f080c4cc478d88cb0bb5e1507ace75b55717764230b8",
-        "address": "0x9FFEC691D21aC1Ec21BF6de9A1f310C471BeC8F4",
+        "transactionIndex": 5,
+        "blockNumber": 23093589,
+        "transactionHash": "0x5f1a09b8dc67a81f9d1bd9c1842cc883a1e65ef47de2585fef7f20d6b22e5867",
+        "address": "0xA5398E751098D7B04C366297605ACB469A88C889",
         "topics": [
           "0xbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b",
-          "0x0000000000000000000000002896026275f17800607c8862d82491d0316f9e34"
+          "0x000000000000000000000000955fd11d67f053b8cffae0192df945de35fc3fa8"
         ],
         "data": "0x",
-        "logIndex": 15,
-        "blockHash": "0xfa380ab18d6fe3d441ae49b2b8ea5b65afb9eaf312ee2f7831bd87535d20b598"
+        "logIndex": 10,
+        "blockHash": "0xe7a854ad9c686c6827386a588d2a8a71fab70b7504e9d82c7e1b7f128750a6ef"
       },
       {
-        "transactionIndex": 6,
-        "blockNumber": 23053589,
-        "transactionHash": "0xa7d1f787cf590b33d231f080c4cc478d88cb0bb5e1507ace75b55717764230b8",
-        "address": "0x9FFEC691D21aC1Ec21BF6de9A1f310C471BeC8F4",
+        "transactionIndex": 5,
+        "blockNumber": 23093589,
+        "transactionHash": "0x5f1a09b8dc67a81f9d1bd9c1842cc883a1e65ef47de2585fef7f20d6b22e5867",
+        "address": "0xA5398E751098D7B04C366297605ACB469A88C889",
         "topics": [
           "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           "0x000000000000000000000000e0b4c9c36f5a5d0ff3a547feabb6bc9ba65805f2"
         ],
         "data": "0x",
-        "logIndex": 16,
-        "blockHash": "0xfa380ab18d6fe3d441ae49b2b8ea5b65afb9eaf312ee2f7831bd87535d20b598"
+        "logIndex": 11,
+        "blockHash": "0xe7a854ad9c686c6827386a588d2a8a71fab70b7504e9d82c7e1b7f128750a6ef"
       },
       {
-        "transactionIndex": 6,
-        "blockNumber": 23053589,
-        "transactionHash": "0xa7d1f787cf590b33d231f080c4cc478d88cb0bb5e1507ace75b55717764230b8",
-        "address": "0x9FFEC691D21aC1Ec21BF6de9A1f310C471BeC8F4",
+        "transactionIndex": 5,
+        "blockNumber": 23093589,
+        "transactionHash": "0x5f1a09b8dc67a81f9d1bd9c1842cc883a1e65ef47de2585fef7f20d6b22e5867",
+        "address": "0xA5398E751098D7B04C366297605ACB469A88C889",
         "topics": [
           "0x7f26b83ff96e1f2b6a682f133852f6798a09c465da95921460cefb3847402498"
         ],
         "data": "0x0000000000000000000000000000000000000000000000000000000000000001",
-        "logIndex": 17,
-        "blockHash": "0xfa380ab18d6fe3d441ae49b2b8ea5b65afb9eaf312ee2f7831bd87535d20b598"
+        "logIndex": 12,
+        "blockHash": "0xe7a854ad9c686c6827386a588d2a8a71fab70b7504e9d82c7e1b7f128750a6ef"
       }
     ],
-    "blockNumber": 23053589,
-    "cumulativeGasUsed": "1488531",
+    "blockNumber": 23093589,
+    "cumulativeGasUsed": "6864673",
     "status": 1,
     "byzantium": true
   },
   "args": [
-    "0x2896026275f17800607C8862d82491d0316f9e34",
+    "0x955FD11d67f053b8cfFaE0192dF945de35fc3fa8",
     "0xa523d35e000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000000105031322046616e7461737920506173730000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000055031324650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000676302e302e31000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d65031322046616e74617379205061737320697320612073796d626f6c206f662070617274696369706174696f6e20696e2050313220417263616e61204020544931312c2061206d617373697665206f6e6c696e6520776562332067616d696e672063616d706169676e20696e206163636f7264616e63652077697468206f6e65206f662074686520776f726c6427732062696767657374206573706f72747320746f75726e616d656e74733a2054686520496e7465726e6174696f6e616c20323032322c20666561747572696e6720446f746120322e00000000000000000000"
   ],
   "numDeployments": 1,
@@ -796,5 +844,5 @@
       "P12 Fantasy Pass is a symbol of participation in P12 Arcana @ TI11, a massive online web3 gaming campaign in accordance with one of the world's biggest esports tournaments: The International 2022, featuring Dota 2."
     ]
   },
-  "implementation": "0xBcF20645Ed5836975c72F99455cC6E837a5ec69E"
+  "implementation": "0x955FD11d67f053b8cfFaE0192dF945de35fc3fa8"
 }

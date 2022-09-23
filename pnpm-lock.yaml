@@ -11,6 +11,7 @@ specifiers:
   '@openzeppelin/contracts-upgradeable': ^4.7.3
   '@openzeppelin/hardhat-upgrades': ^1.20.0
   '@openzeppelin/upgrades-core': ^1.19.1
+  '@p12/contracts-lib': ^0.0.1
   '@typechain/ethers-v5': ^7.2.0
   '@typechain/hardhat': ^2.3.1
   '@types/chai': ^4.3.0
@@ -52,6 +53,7 @@ dependencies:
   '@openzeppelin/contracts': 4.7.3
   '@openzeppelin/contracts-upgradeable': 4.7.3
   '@openzeppelin/upgrades-core': 1.19.1
+  '@p12/contracts-lib': 0.0.1
 
 devDependencies:
   '@ethersproject/abi': 5.7.0
@@ -1007,6 +1009,13 @@ packages:
       solidity-ast: 0.4.35
     transitivePeerDependencies:
       - supports-color
+
+  /@p12/contracts-lib/0.0.1:
+    resolution: {integrity: sha512-EsBXOUcnLqLszFPZEd6V42s9cIYGLIoKbYZptEc8iMo+yvvY/S9dkZDnzo77OzteEAOlgmT3njHq4hYWe3pJIw==}
+    dependencies:
+      '@openzeppelin/contracts': 4.7.3
+      '@openzeppelin/contracts-upgradeable': 4.7.3
+    dev: false
 
   /@resolver-engine/core/0.3.3:
     resolution: {integrity: sha512-eB8nEbKDJJBi5p5SrvrvILn4a0h42bKtbCTri3ZxCGt6UvoQyp7HnGOfki944bUjBSHKK3RvgfViHn+kqdXtnQ==}

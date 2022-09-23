@@ -1,20 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity 0.8.17;
 
-import 'hardhat/console.sol';
-// import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
-// import '@openzeppelin/contracts/metatx/ERC2771Context.sol';
-// import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts-upgradeable/metatx/ERC2771ContextUpgradeable.sol';
-// import '@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
-
 import '@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol';
-import { Base64 } from '@openzeppelin/contracts/utils/Base64.sol';
+import '@openzeppelin/contracts/utils/Base64.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
+
+import '@p12/contracts-lib/contracts/access/SafeOwnableUpgradeable.sol';
 
 import './interface/IP12ArcanaUpgradable.sol';
 import './interface/IRenderEngine.sol';
@@ -22,7 +17,7 @@ import './interface/IRenderEngine.sol';
 contract P12ArcanaUpgradable is
   IP12ArcanaUpgradable,
   ERC2771ContextUpgradeable,
-  OwnableUpgradeable,
+  SafeOwnableUpgradeable,
   UUPSUpgradeable,
   ERC721Upgradeable,
   EIP712Upgradeable
@@ -30,8 +25,6 @@ contract P12ArcanaUpgradable is
   using ECDSAUpgradeable for bytes32;
 
   bytes32 private constant _TYPEHASH = keccak256('PowerUpdate(uint256 tokenId,uint256 power,uint256 deadline)');
-
-  uint256 idx;
 
   //
   address public renderEngine;
@@ -75,15 +68,13 @@ contract P12ArcanaUpgradable is
   function getBattlePass() external {
     require(balanceOf(_msgSender()) == 0, 'P12Arcana: already have pass');
 
-    idx += 1;
-    _safeMint(_msgSender(), idx);
+    _safeMint(_msgSender(), uint256(uint160(_msgSender())));
   }
 
   function getBattlePass(address user) external {
     require(balanceOf(user) == 0, 'P12Arcana: already have pass');
 
-    idx += 1;
-    _safeMint(_msgSender(), idx);
+    _safeMint(_msgSender(), uint256(uint160(_msgSender())));
   }
 
   function updateAnswerUri(uint256 tokenId, string calldata uri) external {
@@ -139,6 +130,14 @@ contract P12ArcanaUpgradable is
     );
 
     return string.concat('data:application/json;base64,', metadata);
+  }
+
+  function _beforeTokenTransfer(
+    address from,
+    address,
+    uint256
+  ) internal virtual override {
+    require(from == address(0), 'P12Arcana: can not transfer');
   }
 
   function getVotingPower(uint256 tokenId) external view override returns (uint256) {
