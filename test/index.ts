@@ -60,7 +60,7 @@ describe('P12Arcana', function () {
     const answerTx = await p12Arcana.connect(user).populateTransaction.updateAnswerUri(
       BigNumber.from(user.address),
       // cspell:disable-next-line
-      'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy',
+      'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasz',
     );
 
     const answerReq = await signMetaTxRequest(user, forwarder, answerTx);
@@ -69,7 +69,7 @@ describe('P12Arcana', function () {
 
     expect(await p12Arcana.answersUri(BigNumber.from(user.address))).to.be.equal(
       // cspell:disable-next-line
-      'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy',
+      'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasz',
     );
   });
 

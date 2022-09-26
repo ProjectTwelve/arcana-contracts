@@ -27,6 +27,6 @@ const func: DeployFunction = async function ({ deployments, getNamedAccounts }) 
     log: true,
   });
 };
-func.tags = ['P12AssetFactory'];
+func.tags = ['P12ArcanaUpgradable'];
 
 export default func;

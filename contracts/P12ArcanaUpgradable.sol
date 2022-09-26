@@ -74,7 +74,7 @@ contract P12ArcanaUpgradable is
   function getBattlePass(address user) external {
     require(balanceOf(user) == 0, 'P12Arcana: already have pass');
 
-    _safeMint(_msgSender(), uint256(uint160(_msgSender())));
+    _safeMint(user, uint256(uint160(user)));
   }
 
   function updateAnswerUri(uint256 tokenId, string calldata uri) external {
@@ -121,7 +121,8 @@ contract P12ArcanaUpgradable is
           '","description":"',
           _description,
           '","image":"',
-          SVG,
+          'data:image/svg+xml;base64,',
+          Base64.encode(bytes(SVG)),
           '","attributes": [{"display_type": "number","trait_type": "power","value": ',
           Strings.toString(_powers[tokenId]),
           '}]}'

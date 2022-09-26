@@ -64,7 +64,15 @@
     "@openzeppelin/contracts": "^4.7.3",
     "@openzeppelin/contracts-upgradeable": "^4.7.3",
     "@openzeppelin/upgrades-core": "^1.19.1",
-    "@p12/contracts-lib": "^0.0.1"
+    "@p12/contracts-lib": "^0.0.3"
+  },
+  "overrides": {
+    "@nomiclabs/hardhat-waffle": {
+      "@nomiclabs/hardhat-ethers": "$@nomiclabs/hardhat-ethers"
+    },
+    "@openzeppelin/hardhat-upgrades": {
+      "@nomiclabs/hardhat-ethers": "$@nomiclabs/hardhat-ethers"
+    }
   },
   "files": []
 }
