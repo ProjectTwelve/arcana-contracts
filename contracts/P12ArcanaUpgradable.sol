@@ -40,6 +40,9 @@ contract P12ArcanaUpgradable is
   // tokenId => ipfs uri
   mapping(uint256 => string) public answersUri;
 
+  // hash(r,s,v) => bool
+  mapping(bytes32 => bool) public signatureUsed;
+
   constructor(address forwarder_) initializer ERC2771ContextUpgradeable(forwarder_) {}
 
   function initialize(
@@ -89,7 +92,7 @@ contract P12ArcanaUpgradable is
     uint256 power,
     uint256 deadline
   ) external onlySigner {
-    require(deadline > block.timestamp, 'P12Arcana: outdated sig');
+    require(deadline > block.timestamp, 'P12Arcana: outdated request');
     _powers[tokenId] = power;
 
     emit PowerUpdate(tokenId, power);
@@ -101,14 +104,16 @@ contract P12ArcanaUpgradable is
     uint256 deadline,
     bytes calldata signature
   ) external {
-    require(ownerOf(tokenId) == _msgSender(), 'P12Arcana: not token owner');
+    require(!signatureUsed[keccak256(signature)], 'P12Arcana: sig already used');
     require(deadline > block.timestamp, 'P12Arcana: outdated sig');
 
     address signer = _hashTypedDataV4(keccak256(abi.encode(_TYPEHASH, tokenId, power, deadline))).recover(signature);
 
-    require(signers[signer] == true, 'P12Arcana: sig not from signer');
+    require(signers[signer], 'P12Arcana: sig not from signer');
 
     _powers[tokenId] = power;
+
+    signatureUsed[keccak256(signature)] = true;
 
     emit PowerUpdate(tokenId, power);
   }
