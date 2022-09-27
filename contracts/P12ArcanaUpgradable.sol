@@ -81,6 +81,7 @@ contract P12ArcanaUpgradable is
     require(ownerOf(tokenId) == _msgSender(), 'P12Arcana: not token owner');
 
     answersUri[tokenId] = uri;
+    emit AnswerUriUpdate(tokenId, uri);
   }
 
   function updatePower(
@@ -90,6 +91,8 @@ contract P12ArcanaUpgradable is
   ) external onlySigner {
     require(deadline > block.timestamp, 'P12Arcana: outdated sig');
     _powers[tokenId] = power;
+
+    emit PowerUpdate(tokenId, power);
   }
 
   function updatePower(
@@ -106,6 +109,8 @@ contract P12ArcanaUpgradable is
     require(signers[signer] == true, 'P12Arcana: sig not from signer');
 
     _powers[tokenId] = power;
+
+    emit PowerUpdate(tokenId, power);
   }
 
   function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
@@ -147,10 +152,14 @@ contract P12ArcanaUpgradable is
 
   function setSigner(address signer, bool valid) external onlyOwner {
     signers[signer] = valid;
+
+    emit SignerSet(signer, valid);
   }
 
   function setRenderEngin(address newEngine) external onlyOwner {
     renderEngine = newEngine;
+
+    emit RenderEngineSet(newEngine);
   }
 
   modifier onlySigner() {
