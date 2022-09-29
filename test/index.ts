@@ -150,6 +150,16 @@ describe('P12Arcana', function () {
     expect(await p12Arcana.getVotingPower(BigNumber.from(user.address))).to.be.equal(100);
   });
 
+  it('Should update answer after lock fail', async () => {
+    await p12Arcana.setLock(true);
+    await expect(
+      p12Arcana
+        .connect(user)
+        // cspell:disable-next-line
+        .updateAnswerUri(BigNumber.from(user.address), 'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasy'),
+    ).to.be.revertedWith('P12Arcana: locked');
+  });
+
   it('Should render tokenUri successfully', async () => {
     const metadata = await p12Arcana.tokenURI(BigNumber.from(user.address));
 

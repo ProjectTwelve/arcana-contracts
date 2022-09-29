@@ -6,6 +6,7 @@ interface IP12ArcanaUpgradable {
 
   event SignerSet(address signer, bool valid);
   event RenderEngineSet(address renderEngin);
+  event LockSet(bool lock);
   event PowerUpdate(uint256 tokenId, uint256 power);
   event AnswerUriUpdate(uint256 tokenId, string uri);
 }

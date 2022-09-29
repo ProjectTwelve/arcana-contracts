@@ -31,6 +31,8 @@ contract P12ArcanaUpgradable is
 
   string private _description;
 
+  bool private _lock;
+
   // signers
   mapping(address => bool) public signers;
 
@@ -80,7 +82,7 @@ contract P12ArcanaUpgradable is
     _safeMint(user, uint256(uint160(user)));
   }
 
-  function updateAnswerUri(uint256 tokenId, string calldata uri) external {
+  function updateAnswerUri(uint256 tokenId, string calldata uri) external whenNotLocked {
     require(ownerOf(tokenId) == _msgSender(), 'P12Arcana: not token owner');
 
     answersUri[tokenId] = uri;
@@ -155,6 +157,11 @@ contract P12ArcanaUpgradable is
     return _powers[tokenId];
   }
 
+  function setLock(bool lock_) external onlyOwner {
+    _lock = lock_;
+    emit LockSet(lock_);
+  }
+
   function setSigner(address signer, bool valid) external onlyOwner {
     signers[signer] = valid;
 
@@ -169,6 +176,11 @@ contract P12ArcanaUpgradable is
 
   modifier onlySigner() {
     require(signers[_msgSender()] == true, 'P12Arcana: not signer');
+    _;
+  }
+
+  modifier whenNotLocked() {
+    require(!_lock, 'P12Arcana: locked');
     _;
   }
 }

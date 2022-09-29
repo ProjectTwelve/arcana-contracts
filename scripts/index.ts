@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { ethers } from 'hardhat';
+import hre, { ethers } from 'hardhat';
 import { exit } from 'process';
 import { getContract } from '../test/utils';
 import { signMetaTxRequest } from '../test/signer';
@@ -16,7 +16,7 @@ async function main() {
 
   const deadline = Math.round(new Date().getTime() / 1000) + 86400;
 
-  //   // update power
+  // update power
   await arcana
     .connect(deployer)
     ['updatePower(uint256,uint256,uint256)'](BigNumber.from(a0.address), BigNumber.from(16), deadline);
@@ -25,13 +25,39 @@ async function main() {
   const answerTx = await arcana.connect(a0).populateTransaction.updateAnswerUri(
     BigNumber.from(a0.address),
     // cspell:disable-next-line
-    'ipfs://bafyreibenzyulwwmj7gmcbd4tbqanehuumwi3vpfjttspp7gs5kylouasx',
+    'ipfs://QmXxPjQa1ShVnnai87qwCJg5hxJTzshwLNaqDyWGahgtUH',
   );
 
-  const answerReq = await signMetaTxRequest(a0, forwarder, { ...answerTx, gasLimit: BigNumber.from(100000) });
+  const answerReq = await signMetaTxRequest(a0, forwarder, { ...answerTx, gasLimit: BigNumber.from(200000) });
 
-  console.log(answerReq);
-  //   await forwarder.connect(a1).execute(answerReq.request, answerReq.signature);
+  await forwarder.connect(a1).execute(answerReq.request, answerReq.signature);
+
+  const chainId = await hre.getChainId();
+  const domain = { name: await arcana.name(), version: 'v0.0.1', chainId: chainId, verifyingContract: arcana.address };
+  // const deadline = Math.round(new Date().getTime() / 1000) + 86400;
+
+  const type = {
+    PowerUpdate: [
+      { name: 'tokenId', type: 'uint256' },
+      { name: 'power', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' },
+    ],
+  };
+
+  const sig = await deployer._signTypedData(domain, type, {
+    tokenId: BigNumber.from(a0.address),
+    power: BigNumber.from(18),
+    deadline: deadline,
+  });
+
+  const tx = await arcana
+    .connect(a1)
+    ['updatePower(uint256,uint256,uint256,bytes)'](BigNumber.from(a0.address), BigNumber.from(18), deadline, sig);
+
+  // const req = await signMetaTxRequest(a0, forwarder, { ...tx, gasLimit: BigNumber.from(200000) });
+
+  // const d = await forwarder.connect(a1).execute(req.request, req.signature);
+  console.log(tx);
 }
 
 main().catch((e) => {
