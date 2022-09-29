@@ -25,6 +25,7 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
   }
 });
 
+const deployer = process.env.DEPLOYER || '0x0000000000000000000000000000000000000000';
 const accounts = process.env.ACCOUNTS ? process.env.ACCOUNTS.split(',') : [];
 const addresses = process.env.ADDRESSES ? process.env.ADDRESSES.split(',') : [];
 
@@ -56,9 +57,21 @@ const config: HardhatUserConfig = {
       gas: 'auto',
       gasPrice: 'auto',
     },
-    rinkeby: {
-      url: process.env.RINKEBY_URL || '',
+    bnbMain: {
+      url: 'https://bsc-dataseed1.binance.org/',
       accounts: accounts,
+      gas: 'auto',
+      gasPrice: 'auto',
+      deploy: ['deploy/bnbMain'],
+      tags: ['production'],
+    },
+    bnbTestStaging: {
+      url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+      accounts: accounts,
+      gas: 'auto',
+      gasPrice: 'auto',
+      deploy: ['deploy/bnbTestStaging'],
+      tags: ['staging'],
     },
     bnbTest: {
       url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
@@ -66,12 +79,25 @@ const config: HardhatUserConfig = {
       gas: 'auto',
       gasPrice: 'auto',
       deploy: ['deploy/bnbTest'],
+      tags: ['test'],
+    },
+    mumbai: {
+      url: 'https://matic-mumbai.chainstacklabs.com',
+      accounts: accounts,
+      gas: 'auto',
+      gasPrice: 'auto',
+      deploy: ['deploy/mumbai'],
+      tags: ['test'],
     },
   },
   namedAccounts: {
     deployer: {
       default: 0,
       p12TestNet: addresses[0],
+      bnbTest: addresses[0],
+      bnbTestStaging: deployer,
+      bnbMain: deployer,
+      mumbai: deployer,
     },
   },
   gasReporter: {
