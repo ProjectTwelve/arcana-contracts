@@ -12,9 +12,12 @@
     "Dapphub",
     "dedup",
     "delegatecall",
+    "Dota",
     "enumerability",
+    "esports",
     "ethersproject",
     "FULLDIV",
+    "Henny",
     "hevm",
     "hljs",
     "Hola",
@@ -25,6 +28,8 @@
     "keccak",
     "koro",
     "licence",
+    "merkle",
+    "merkletreejs",
     "metatx",
     "mload",
     "mulmod",
@@ -56,15 +61,7 @@
     "uqdiv",
     "uups",
     "UUPS",
-    "xwbf",
-    "composability",
-    "Hola",
-    "metatx",
-    "ipfs",
-    "concat",
-    "Henny",
-    "esports",
-    "Dota"
+    "xwbf"
   ],
   "ignorePaths": ["typechain/**", "flatten/**"]
 }
