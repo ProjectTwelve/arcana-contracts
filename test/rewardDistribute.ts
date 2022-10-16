@@ -6,7 +6,7 @@ import MerkleTree from 'merkletreejs';
 import { RewardDistributor, TestERC20 } from '../typechain';
 import { getContract } from './utils';
 
-describe('P12Arcana', function () {
+describe('RewardDistributor', function () {
   let rewardDistributor: RewardDistributor;
   let testERC20: TestERC20;
   let tree: MerkleTree;
@@ -53,5 +53,40 @@ describe('P12Arcana', function () {
         return '0x' + v.data.toString('hex');
       }),
     );
+  });
+  it('should reclaim fail', async () => {
+    const leaf = solidityKeccak256(['address', 'uint256'], [user1.address, parseEther('9')]);
+    await expect(
+      rewardDistributor.connect(user1).claimTokens(
+        parseEther('9'),
+        tree.getProof(leaf).map((v) => {
+          return '0x' + v.data.toString('hex');
+        }),
+      ),
+    ).to.be.revertedWith('P12Arcana: Tokens already claimed');
+  });
+
+  it('should claim amount on be half of the other fail', async () => {
+    const leaf = solidityKeccak256(['address', 'uint256'], [user2.address, parseEther('10')]);
+    await expect(
+      rewardDistributor.connect(user1).claimTokens(
+        parseEther('10'),
+        tree.getProof(leaf).map((v) => {
+          return '0x' + v.data.toString('hex');
+        }),
+      ),
+    ).to.be.revertedWith('P12Arcana: invalid proof');
+  });
+
+  it('should claim via invalid amount', async () => {
+    const leaf = solidityKeccak256(['address', 'uint256'], [user2.address, parseEther('13')]);
+    await expect(
+      rewardDistributor.connect(user2).claimTokens(
+        parseEther('13'),
+        tree.getProof(leaf).map((v) => {
+          return '0x' + v.data.toString('hex');
+        }),
+      ),
+    ).to.be.revertedWith('P12Arcana: invalid proof');
   });
 });
