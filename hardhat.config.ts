@@ -49,6 +49,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       chainId: 44102,
+      deploy: ['deploy/hardhat'],
     },
     p12TestNet: {
       url: 'https://testnet.p12.games/',
