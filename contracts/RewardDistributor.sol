@@ -36,7 +36,7 @@ contract RewardDistributor is IRewardDistributor, SafeOwnable {
     require(!isClaimed(uint160(_msgSender())), 'P12Arcana: already claimed');
 
     claimed.set(uint160(_msgSender()));
-    rewardToken.transfer(msg.sender, amount);
+    rewardToken.safeTransfer(msg.sender, amount);
     emit Claim(msg.sender, amount);
   }
 
@@ -73,7 +73,7 @@ contract RewardDistributor is IRewardDistributor, SafeOwnable {
   function withdraw() external onlyOwner {
     uint256 balance = rewardToken.balanceOf(address(this));
     // can only withdraw to p12.eth
-    rewardToken.transfer(address(0x618bb5466c13747049aF8F3b237f929c95dE5D7e), balance);
+    rewardToken.safeTransfer(address(0x618bb5466c13747049aF8F3b237f929c95dE5D7e), balance);
     emit WithDrawn(address(0x618bb5466c13747049aF8F3b237f929c95dE5D7e), balance);
   }
 
