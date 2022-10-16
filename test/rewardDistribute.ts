@@ -20,6 +20,7 @@ describe('RewardDistributor', function () {
     testERC20 = await getContract<TestERC20>('TestERC20');
     [admin, user1, user2, user3, user4] = await ethers.getSigners();
   });
+
   it('should deposit successfully', async () => {
     await testERC20.mint(parseEther('100'));
     await testERC20.approve(rewardDistributor.address, ethers.constants.MaxUint256);
@@ -28,9 +29,14 @@ describe('RewardDistributor', function () {
     await rewardDistributor.deposit(parseEther('100'));
     expect(await testERC20.balanceOf(rewardDistributor.address)).to.be.equal(parseEther('100'));
   });
+
   it('should set claim ends successfully', async () => {
-    await rewardDistributor.setClaimPeriodEnds(new Date().getTime() + 86400);
+    const endTime = new Date().getTime() + 86400;
+    await expect(rewardDistributor.setClaimPeriodEnds(endTime))
+      .to.be.emit(rewardDistributor, 'ClaimPeriodEndsChanged')
+      .withArgs(endTime);
   });
+
   it('should set merkle tree root successfully', async () => {
     const leaves = [
       { address: user1.address, amount: parseEther('9') },
@@ -42,18 +48,28 @@ describe('RewardDistributor', function () {
     });
 
     tree = new MerkleTree(leaves, keccak256, { sort: true });
-
-    await rewardDistributor.setMerkleRoot('0x' + tree.getRoot().toString('hex'));
+    const hexRoot = '0x' + tree.getRoot().toString('hex');
+    await expect(rewardDistributor.setMerkleRoot(hexRoot)).to.be.emit(rewardDistributor, 'MerkleRootChanged').withArgs(hexRoot);
   });
-  it('should claim reward successfully', async () => {
-    const leaf = solidityKeccak256(['address', 'uint256'], [user1.address, parseEther('9')]);
-    await rewardDistributor.connect(user1).claimTokens(
-      parseEther('9'),
-      tree.getProof(leaf).map((v) => {
-        return '0x' + v.data.toString('hex');
-      }),
+
+  it('should set merkle tree twice fail', async () => {
+    await expect(rewardDistributor.setMerkleRoot(ethers.utils.randomBytes(32))).to.be.revertedWith(
+      'P12Arcana: cannot set merkle tree twice',
     );
   });
+
+  it('should claim reward successfully', async () => {
+    const leaf = solidityKeccak256(['address', 'uint256'], [user1.address, parseEther('9')]);
+    const proof = tree.getProof(leaf).map((v) => {
+      return '0x' + v.data.toString('hex');
+    });
+    await expect(rewardDistributor.connect(user1).claimTokens(parseEther('9'), proof))
+      .to.be.emit(testERC20, 'Transfer')
+      .withArgs(rewardDistributor.address, user1.address, parseEther('9'))
+      .to.be.emit(rewardDistributor, 'Claim')
+      .withArgs(user1.address, parseEther('9'));
+  });
+
   it('should reclaim fail', async () => {
     const leaf = solidityKeccak256(['address', 'uint256'], [user1.address, parseEther('9')]);
     await expect(
@@ -88,5 +104,13 @@ describe('RewardDistributor', function () {
         }),
       ),
     ).to.be.revertedWith('P12Arcana: invalid proof');
+  });
+
+  it('should withdraw successfully', async () => {
+    await expect(rewardDistributor.withdraw())
+      .to.be.emit(testERC20, 'Transfer')
+      .withArgs(rewardDistributor.address, '0x618bb5466c13747049aF8F3b237f929c95dE5D7e', parseEther('91'))
+      .to.be.emit(rewardDistributor, 'WithDrawn')
+      .withArgs('0x618bb5466c13747049aF8F3b237f929c95dE5D7e', parseEther('91'));
   });
 });

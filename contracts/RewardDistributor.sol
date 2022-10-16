@@ -53,6 +53,7 @@ contract RewardDistributor is IRewardDistributor, SafeOwnable {
    * @param newMerkleRoot The merkle root to set.
    */
   function setMerkleRoot(bytes32 newMerkleRoot) external onlyOwner {
+    require(_merkleRoot == bytes32(0), 'P12Arcana: cannot set merkle tree twice');
     _merkleRoot = newMerkleRoot;
     emit MerkleRootChanged(_merkleRoot);
   }
@@ -68,11 +69,12 @@ contract RewardDistributor is IRewardDistributor, SafeOwnable {
 
   /**
    * @dev withdraw remaining tokens.
-   * @param dest The destination address.
    */
-  function withdraw(address dest) external onlyOwner {
-    require(dest != address(0), 'P12Arcana: can not withdraw to 0');
-    rewardToken.transfer(dest, rewardToken.balanceOf(address(this)));
+  function withdraw() external onlyOwner {
+    uint256 balance = rewardToken.balanceOf(address(this));
+    // can only withdraw to p12.eth
+    rewardToken.transfer(address(0x618bb5466c13747049aF8F3b237f929c95dE5D7e), balance);
+    emit WithDrawn(address(0x618bb5466c13747049aF8F3b237f929c95dE5D7e), balance);
   }
 
   /**
