@@ -30,6 +30,12 @@ describe('RewardDistributor', function () {
     expect(await testERC20.balanceOf(rewardDistributor.address)).to.be.equal(parseEther('100'));
   });
 
+  it('should claim before end set fail', async () => {
+    await expect(
+      rewardDistributor.connect(user1).claimTokens(parseEther('9'), [ethers.utils.randomBytes(32)]),
+    ).to.be.revertedWith('P12Arcana: not time to claim');
+  });
+
   it('should set claim ends successfully', async () => {
     const endTime = new Date().getTime() + 86400;
     await expect(rewardDistributor.setClaimPeriodEnds(endTime))
@@ -54,7 +60,7 @@ describe('RewardDistributor', function () {
 
   it('should set merkle tree twice fail', async () => {
     await expect(rewardDistributor.setMerkleRoot(ethers.utils.randomBytes(32))).to.be.revertedWith(
-      'P12Arcana: cannot set merkle tree twice',
+      'P12Arcana: cannot set root twice',
     );
   });
 
@@ -79,7 +85,7 @@ describe('RewardDistributor', function () {
           return '0x' + v.data.toString('hex');
         }),
       ),
-    ).to.be.revertedWith('P12Arcana: Tokens already claimed');
+    ).to.be.revertedWith('P12Arcana: already claimed');
   });
 
   it('should claim amount on be half of the other fail', async () => {
