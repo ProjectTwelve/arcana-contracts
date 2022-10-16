@@ -33,7 +33,7 @@ contract RewardDistributor is IRewardDistributor, SafeOwnable {
     bytes32 leaf = keccak256(abi.encodePacked(msg.sender, amount));
     bool valid = MerkleProof.verify(merkleProof, _merkleRoot, leaf);
     require(valid, 'P12Arcana: invalid proof');
-    require(!isClaimed(uint160(_msgSender())), 'P12Arcana: Tokens already claimed.');
+    require(!isClaimed(uint160(_msgSender())), 'P12Arcana: Tokens already claimed');
 
     claimed.set(uint160(_msgSender()));
     rewardToken.transfer(msg.sender, amount);
