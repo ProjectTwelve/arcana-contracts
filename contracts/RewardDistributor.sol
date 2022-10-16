@@ -13,7 +13,7 @@ contract RewardDistributor is IRewardDistributor, SafeOwnable {
   using BitMaps for BitMaps.BitMap;
   using SafeERC20 for IERC20;
 
-  bytes32 private _merkleRoot;
+  bytes32 public merkleRoot;
   IERC20 public rewardToken;
   uint256 public claimPeriodEnds;
   BitMaps.BitMap private claimed;
@@ -28,12 +28,12 @@ contract RewardDistributor is IRewardDistributor, SafeOwnable {
    * @param merkleProof A merkle proof proving the claim is valid.
    */
   function claimTokens(uint256 amount, bytes32[] calldata merkleProof) external {
-    require(block.timestamp < claimPeriodEnds, 'P12Arcana: Not in claim period.');
-    require(amount <= rewardToken.balanceOf(address(this)), 'P12Arcana: Amount exceeds balance');
+    require(block.timestamp < claimPeriodEnds, 'P12Arcana: not time to claim');
+    require(amount <= rewardToken.balanceOf(address(this)), 'P12Arcana: exceeds balance');
     bytes32 leaf = keccak256(abi.encodePacked(msg.sender, amount));
-    bool valid = MerkleProof.verify(merkleProof, _merkleRoot, leaf);
+    bool valid = MerkleProof.verify(merkleProof, merkleRoot, leaf);
     require(valid, 'P12Arcana: invalid proof');
-    require(!isClaimed(uint160(_msgSender())), 'P12Arcana: Tokens already claimed');
+    require(!isClaimed(uint160(_msgSender())), 'P12Arcana: already claimed');
 
     claimed.set(uint160(_msgSender()));
     rewardToken.transfer(msg.sender, amount);
@@ -53,9 +53,9 @@ contract RewardDistributor is IRewardDistributor, SafeOwnable {
    * @param newMerkleRoot The merkle root to set.
    */
   function setMerkleRoot(bytes32 newMerkleRoot) external onlyOwner {
-    require(_merkleRoot == bytes32(0), 'P12Arcana: cannot set merkle tree twice');
-    _merkleRoot = newMerkleRoot;
-    emit MerkleRootChanged(_merkleRoot);
+    require(merkleRoot == bytes32(0), 'P12Arcana: cannot set root twice');
+    merkleRoot = newMerkleRoot;
+    emit MerkleRootChanged(merkleRoot);
   }
 
   /**
