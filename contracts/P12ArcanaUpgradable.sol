@@ -96,8 +96,6 @@ contract P12ArcanaUpgradable is
   ) external onlySigner {
     require(deadline > block.timestamp, 'P12Arcana: outdated request');
     _powers[tokenId] = power;
-
-    emit PowerUpdate(tokenId, power);
   }
 
   function updatePower(
@@ -116,8 +114,6 @@ contract P12ArcanaUpgradable is
     _powers[tokenId] = power;
 
     signatureUsed[keccak256(signature)] = true;
-
-    emit PowerUpdate(tokenId, power);
   }
 
   function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
