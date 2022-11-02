@@ -15,6 +15,7 @@ describe('RewardDistributor', function () {
     user2: SignerWithAddress,
     user3: SignerWithAddress,
     user4: SignerWithAddress;
+  let leaves: string[];
   this.beforeAll(async () => {
     rewardDistributor = await getContract<RewardDistributor>('RewardDistributor');
     testERC20 = await getContract<TestERC20>('TestERC20');
@@ -44,11 +45,14 @@ describe('RewardDistributor', function () {
   });
 
   it('should set merkle tree root successfully', async () => {
-    const leaves = [
+    leaves = [
       { address: user1.address, amount: parseEther('9') },
       { address: user2.address, amount: parseEther('10') },
       { address: user3.address, amount: parseEther('11') },
       { address: user4.address, amount: parseEther('12') },
+      ...Array.from({ length: 10000 }, () => {
+        return { address: ethers.utils.computeAddress(ethers.utils.randomBytes(32)), amount: parseEther('12') };
+      }),
     ].map((v) => {
       return solidityKeccak256(['address', 'uint256'], [v.address, v.amount]);
     });
