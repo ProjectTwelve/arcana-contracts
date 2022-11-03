@@ -30,6 +30,13 @@ async function main() {
       );
       const hexRoot = '0x' + tree.getRoot().toString('hex');
       console.log('Merkle Tree Root: ', hexRoot);
+
+      const leaf = '';
+
+      const proof = tree.getProof(leaf).map((v) => {
+        return '0x' + v.data.toString('hex');
+      });
+      console.log('Proof: ', proof);
     });
 }
 
