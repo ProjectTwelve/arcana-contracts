@@ -5,7 +5,7 @@ const func: DeployFunction = async function ({ deployments, getNamedAccounts }) 
   const { deploy } = deployments;
   const { deployer, owner } = await getNamedAccounts();
 
-  await deploy('RewardDistributor', {
+  await deploy('TestRewardDistributor', {
     from: deployer,
     args: [owner],
     log: true,
