@@ -26,8 +26,9 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 });
 
 const deployer = process.env.DEPLOYER || '0x0000000000000000000000000000000000000000';
+const owner = process.env.OWNER || '0x0000000000000000000000000000000000000000';
 const accounts = process.env.ACCOUNTS ? process.env.ACCOUNTS.split(',') : [];
-const addresses = process.env.ADDRESSES ? process.env.ADDRESSES.split(',') : [];
+// const addresses = process.env.ADDRESSES ? process.env.ADDRESSES.split(',') : [];
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -94,12 +95,24 @@ const config: HardhatUserConfig = {
   namedAccounts: {
     deployer: {
       default: 0,
-      p12TestNet: addresses[0],
-      bnbTest: addresses[0],
+      p12TestNet: deployer,
+      bnbTest: deployer,
       bnbTestStaging: deployer,
       bnbMain: deployer,
       mumbai: deployer,
     },
+    owner: {
+      default: 0,
+      bnbTest: owner,
+      bnbTestStaging: owner,
+      bnbMain: owner,
+    },
+  },
+  deterministicDeployment: {
+    // bnb Chain Test
+    97: { factory: '0x4e59b44847b379578588920cA78FbF26c0B4956C', deployer: '', funding: '', signedTx: '' },
+    // bnb Chain Main
+    56: { factory: '0x4e59b44847b379578588920cA78FbF26c0B4956C', deployer: '', funding: '', signedTx: '' },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

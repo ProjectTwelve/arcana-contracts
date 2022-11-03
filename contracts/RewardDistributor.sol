@@ -5,11 +5,12 @@ import '@openzeppelin/contracts/utils/cryptography/MerkleProof.sol';
 import '@openzeppelin/contracts/utils/structs/BitMaps.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import '@openzeppelin/contracts/proxy/utils/Initializable.sol';
 import '@p12/contracts-lib/contracts/access/SafeOwnable.sol';
 
 import './interface/IRewardDistributor.sol';
 
-contract RewardDistributor is IRewardDistributor, SafeOwnable {
+contract RewardDistributor is IRewardDistributor, SafeOwnable, Initializable {
   using BitMaps for BitMaps.BitMap;
   using SafeERC20 for IERC20;
 
@@ -18,8 +19,16 @@ contract RewardDistributor is IRewardDistributor, SafeOwnable {
   uint256 public claimPeriodEnds;
   BitMaps.BitMap private claimed;
 
-  constructor(IERC20 rewardToken_) {
+  constructor(address owner_) {
+    _transferOwnership(owner_);
+  }
+
+  /**
+   * @dev set reward token manually, can only be called once
+   */
+  function initialize(IERC20 rewardToken_) external initializer onlyOwner {
     rewardToken = rewardToken_;
+    emit RewardTokenSet(rewardToken_);
   }
 
   /**

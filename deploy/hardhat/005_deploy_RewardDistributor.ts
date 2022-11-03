@@ -1,15 +1,15 @@
+import { formatBytes32String, keccak256 } from 'ethers/lib/utils';
 import { DeployFunction } from 'hardhat-deploy/types';
 
 const func: DeployFunction = async function ({ deployments, getNamedAccounts }) {
-  const { deploy, get } = deployments;
-  const { deployer } = await getNamedAccounts();
-
-  const testERC20 = await get('TestERC20');
+  const { deploy } = deployments;
+  const { deployer, owner } = await getNamedAccounts();
 
   await deploy('RewardDistributor', {
     from: deployer,
-    args: [testERC20.address],
+    args: [owner],
     log: true,
+    deterministicDeployment: keccak256(formatBytes32String('P12_Arcana_V1')),
   });
 };
 func.tags = ['RewardDistribution'];

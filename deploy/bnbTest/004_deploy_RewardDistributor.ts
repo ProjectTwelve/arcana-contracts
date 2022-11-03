@@ -1,14 +1,15 @@
+import { formatBytes32String, keccak256 } from 'ethers/lib/utils';
 import { DeployFunction } from 'hardhat-deploy/types';
 
 const func: DeployFunction = async function ({ deployments, getNamedAccounts }) {
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deployer, owner } = await getNamedAccounts();
 
   await deploy('RewardDistributor', {
     from: deployer,
-    // BUSD token on bsc testnet https://bscscan.com/address/0xed24fc36d5ee211ea25a80239fb8c4cfd80f12ee
-    args: ['0xed24fc36d5ee211ea25a80239fb8c4cfd80f12ee'],
+    args: [owner],
     log: true,
+    deterministicDeployment: keccak256(formatBytes32String('P12_Arcana_V1_Test')),
   });
 };
 func.tags = ['RewardDistribution'];

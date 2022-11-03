@@ -19,6 +19,15 @@ describe('RewardDistributor', function () {
   this.beforeAll(async () => {
     rewardDistributor = await getContract<RewardDistributor>('RewardDistributor');
     testERC20 = await getContract<TestERC20>('TestERC20');
+
+    await expect(rewardDistributor.initialize(testERC20.address))
+      .to.be.emit(rewardDistributor, 'RewardTokenSet')
+      .withArgs(testERC20.address);
+
+    await expect(rewardDistributor.initialize(testERC20.address)).to.be.revertedWith(
+      'Initializable: contract is already initialized',
+    );
+
     [admin, user1, user2, user3, user4] = await ethers.getSigners();
   });
 
