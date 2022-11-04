@@ -5,11 +5,9 @@ coverage
 coverage.json
 typechain
 
-
 #Hardhat files
 cache
 artifacts
 .openzeppelin
 flatten
-data
 solcInputs

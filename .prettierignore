@@ -7,3 +7,4 @@ coverage*
 gasReporterOutput.json
 typechain
 deployments
+data

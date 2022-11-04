@@ -5,6 +5,7 @@ import * as fs from 'fs-extra';
 import { keccak256, parseEther, solidityKeccak256 } from 'ethers/lib/utils';
 // import { BigNumber } from 'ethers';
 import MerkleTree from 'merkletreejs';
+import { assert } from 'console';
 
 // interface UserReward {
 //   address: string;
@@ -20,6 +21,14 @@ async function main() {
       data.push({ address: row.wallet_address, amount: row.total_reward });
     })
     .on('end', () => {
+      // check whether addresses is not independent
+      const allAddr = data.map((x) => {
+        return x.address;
+      });
+
+      const allAddrSet = new Set(allAddr);
+      assert(allAddr.length === allAddrSet.size);
+
       fs.writeFileSync(path.resolve(__dirname, '../data/merkleTree.json'), JSON.stringify(data));
       const tree = new MerkleTree(
         data.map((x) => {
