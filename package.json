@@ -13,6 +13,7 @@
     "test": "hardhat test --deploy-fixture",
     "test:analysis": "REPORT_GAS=true hardhat test --deploy-fixture",
     "coverage": "hardhat coverage",
+    "gen:root": "hardhat run scripts/parseData.ts",
     "lint": "cspell \"**/*.sol\" \"**/*.ts\" && prettier -w . && eslint \"**/**.ts\" --fix && solhint \"contracts/**/*.sol\""
   },
   "devDependencies": {
