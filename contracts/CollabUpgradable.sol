@@ -23,6 +23,8 @@ contract CollabUpgradable is ICollabUpgradable, SafeOwnableUpgradeable, UUPSUpgr
   // whether an address is an signer
   mapping(address => bool) private _signers;
 
+  constructor() initializer {}
+
   function _authorizeUpgrade(address newImplementation) internal virtual override onlyOwner {}
 
   function initialize(address newOwner) public initializer {
