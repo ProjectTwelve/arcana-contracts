@@ -68,6 +68,7 @@
     "@openzeppelin/upgrades-core": "^1.19.1",
     "@p12/contracts-lib": "^0.0.3",
     "fast-csv": "^4.3.6",
+    "hardhat-contract-sizer": "^2.6.1",
     "merkletreejs": "^0.2.32"
   },
   "overrides": {

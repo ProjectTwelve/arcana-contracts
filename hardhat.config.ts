@@ -11,6 +11,7 @@ import 'hardhat-gas-reporter';
 import 'solidity-coverage';
 import '@openzeppelin/hardhat-upgrades';
 import '@nomiclabs/hardhat-ethers';
+import 'hardhat-contract-sizer';
 
 dotenv.config();
 addFlatTask();
@@ -107,6 +108,12 @@ const config: HardhatUserConfig = {
       bnbTestStaging: owner,
       bnbMain: owner,
     },
+  },
+  contractSizer: {
+    alphaSort: false,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
   },
   deterministicDeployment: {
     // bnb Chain Test

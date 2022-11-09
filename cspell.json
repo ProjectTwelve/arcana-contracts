@@ -6,6 +6,7 @@
     "BNBSCAN",
     "bytecode",
     "chainid",
+    "Collab",
     "composability",
     "concat",
     "Consts",
@@ -61,7 +62,8 @@
     "uqdiv",
     "uups",
     "UUPS",
-    "xwbf"
+    "xwbf",
+    "sstore"
   ],
   "ignorePaths": ["typechain/**", "flatten/**"]
 }
