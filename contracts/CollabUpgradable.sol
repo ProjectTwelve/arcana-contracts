@@ -8,20 +8,12 @@ import '@openzeppelin/contracts/utils/structs/BitMaps.sol';
 
 import './access/SafeOwnableUpgradeable.sol';
 import './interface/ICollabUpgradable.sol';
+import './CollabStorage.sol';
 
-contract CollabUpgradable is ICollabUpgradable, SafeOwnableUpgradeable, UUPSUpgradeable, EIP712Upgradeable {
+contract CollabUpgradable is CollabStorage, ICollabUpgradable, SafeOwnableUpgradeable, UUPSUpgradeable, EIP712Upgradeable {
   using ECDSAUpgradeable for bytes32;
 
   bytes32 private constant _TYPEHASH = keccak256('CanJoin(address user,string id,uint256 deadline)');
-
-  // user address => ( activity string id => ipfs url string)
-  mapping(address => mapping(string => string)) private _stamp;
-
-  //
-  mapping(string => bool) private _protectedActivities;
-
-  // whether an address is an signer
-  mapping(address => bool) private _signers;
 
   constructor() initializer {}
 
