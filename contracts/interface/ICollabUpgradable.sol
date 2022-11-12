@@ -19,4 +19,6 @@ interface ICollabUpgradable {
   ) external;
 
   function saveStamp(string calldata id, string calldata content) external;
+
+  function isProtected(string calldata id) external view returns (bool);
 }

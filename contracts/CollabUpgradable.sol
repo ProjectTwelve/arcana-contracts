@@ -59,6 +59,15 @@ contract CollabUpgradable is CollabStorage, ICollabUpgradable, SafeOwnableUpgrad
   }
 
   /**
+   * @dev returns whether the activity is protected activity
+   * @param id activity id
+   * @return protected whether the activity is protected
+   */
+  function isProtected(string calldata id) external view override returns (bool protected) {
+    protected = _protectedActivities[id];
+  }
+
+  /**
    * @dev read user on-chain stamp
    * @param user user address
    * @param id activity id

@@ -69,7 +69,7 @@ const config: HardhatUserConfig = {
       tags: ['production'],
     },
     bnbTestStaging: {
-      url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+      url: process.env.BNB_CHAIN_TEST_URL,
       accounts: accounts,
       gas: 'auto',
       gasPrice: 'auto',
@@ -77,7 +77,7 @@ const config: HardhatUserConfig = {
       tags: ['staging'],
     },
     bnbTest: {
-      url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+      url: process.env.BNB_CHAIN_TEST_URL,
       accounts: accounts,
       gas: 'auto',
       gasPrice: 'auto',

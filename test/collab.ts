@@ -4,6 +4,8 @@ import { CollabUpgradable } from '../typechain';
 import { getContract } from './utils';
 
 const protectedId = 'ABCDEFG';
+const randomId = ethers.utils.randomBytes(32).toString();
+
 // cspell:disable-next-line
 const content = 'ipfs://Qmxxxxxxxxxxxxxxxxxxxxx';
 
@@ -47,6 +49,13 @@ describe('Collab', function () {
     await expect(collab['saveStamp(string,string)'](id, content))
       .to.be.emit(collab, 'EvStampUpdate')
       .withArgs(user.address, id, content);
+  });
+
+  it('Should isProtected work properly', async () => {
+    const { collab } = await setUpTest();
+
+    expect(await collab.isProtected(protectedId)).to.be.equal(true);
+    expect(await collab.isProtected(randomId)).to.be.equal(false);
   });
 
   it('Should save stamp in protected activities without signature fail', async () => {
